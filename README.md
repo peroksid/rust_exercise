@@ -1,1 +1,1 @@
-My solutuions for Rust track on Exercism.
+My solutions for Rust track on Exercism.
