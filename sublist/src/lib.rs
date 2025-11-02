@@ -1,4 +1,4 @@
-use std::cmp::Ordering::{Equal, Greater, Less};
+use std::cmp::Ordering;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Comparison {
@@ -8,30 +8,15 @@ pub enum Comparison {
     Unequal,
 }
 
-fn find_short_in_long(short: &[i32], long: &[i32], result_when_found: Comparison) -> Comparison {
-    if long.windows(short.len()).any(|x| short.eq(x)) {
-        result_when_found
-    } else {
-        Comparison::Unequal
-    }
+fn find_short_in_long(short: &[i32], long: &[i32]) -> bool {
+    short.is_empty() || long.windows(short.len()).any(|x| short.eq(x))
 }
 
-pub fn sublist(first_list: &[i32], second_list: &[i32]) -> Comparison {
-    match first_list {
-        [] => match second_list {
-            [] => Comparison::Equal,
-            _ => Comparison::Sublist,
-        },
-        _ => match second_list {
-            [] => Comparison::Superlist,
-            _ => match first_list.len().cmp(&second_list.len()) {
-                Equal => match first_list.iter().eq(second_list.iter()) {
-                    true => Comparison::Equal,
-                    false => Comparison::Unequal,
-                },
-                Less => find_short_in_long(first_list, second_list, Comparison::Sublist),
-                Greater => find_short_in_long(second_list, first_list, Comparison::Superlist),
-            },
-        },
+pub fn sublist(left: &[i32], right: &[i32]) -> Comparison {
+    match left.len().cmp(&right.len()) {
+        Ordering::Equal if left == right => Comparison::Equal,
+        Ordering::Greater if find_short_in_long(right, left) => Comparison::Superlist,
+        Ordering::Less if find_short_in_long(left, right) => Comparison::Sublist,
+        _ => Comparison::Unequal,
     }
 }
