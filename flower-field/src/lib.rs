@@ -7,10 +7,8 @@ fn is_flower(garden: &[&str], row_id: usize, col_id: usize) -> bool {
 
 fn count_adjacents(garden: &[&str], row_id: usize, col_id: usize) -> u32 {
     (row_id.saturating_sub(1)..=row_id + 1)
-        .flat_map(|r| {
-            (col_id.saturating_sub(1)..=col_id + 1)
-                .filter(|c| is_flower(garden, r, *c))
-                .collect::<Vec<_>>()
+        .flat_map(move |r| {
+            (col_id.saturating_sub(1)..=col_id + 1).filter(move |c| is_flower(garden, r, *c))
         })
         .count() as u32
 }
