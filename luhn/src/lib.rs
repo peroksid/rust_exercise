@@ -7,42 +7,25 @@ fn digit_value((i, d): (usize, u32)) -> u32 {
     }
 }
 
-struct DigitFilterWithMemory {
-    invalid_char: bool,
-    digit_count: u32,
-}
-
-impl DigitFilterWithMemory {
-    fn new() -> Self {
-        Self {
-            invalid_char: false,
-            digit_count: 0,
-        }
-    }
-    fn if_digit(&mut self, c: char) -> bool {
-        if self.invalid_char {
-            return false;
-        };
-        let is_digit = c.is_ascii_digit();
-        if is_digit {
-            self.digit_count += 1;
-        } else if c != ' ' {
-            self.invalid_char = true
-        }
-        is_digit
-    }
-}
-
 pub fn is_valid(code: &str) -> bool {
-    let mut filter = DigitFilterWithMemory::new();
-    let luhn = code
+    let mut length = 0;
+    let mut sum = 0;
+    let mut is_valid = true;
+    let check_if_valid = |x: &char| {
+        is_valid = x.is_ascii_digit();
+        is_valid
+    };
+    for d in code
         .chars()
+        .filter(|c| !c.is_ascii_whitespace())
         .rev()
-        .filter( |c| filter.if_digit(*c))
+        .take_while(check_if_valid)
         .map(|c| c.to_digit(10).unwrap())
         .enumerate()
         .map(digit_value)
-        .sum::<u32>()
-        % 10;
-    !filter.invalid_char && (filter.digit_count > 1) && luhn == 0
+    {
+        sum += d;
+        length += 1;
+    }
+    is_valid && length > 1 && sum % 10 == 0
 }
