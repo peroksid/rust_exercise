@@ -42,25 +42,25 @@ pub fn convert(number: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>,
     if to_base < 2 {
         return Err(Error::InvalidOutputBase);
     }
-    let mut n: u32 = number
+    number
         .iter()
-        .rev()
-        .enumerate()
-        .try_fold(0, |acc, (i, &d)| {
+        .try_fold(0, |acc, &d| {
             if d < from_base {
-                Ok(d * from_base.pow(i as u32) + acc)
+                Ok(d + from_base * acc)
             } else {
                 Err(Error::InvalidDigit(d))
             }
-        })?;
-    let mut v: Vec<_> = vec![];
-    loop {
-        v.push(n % to_base);
-        n /= to_base;
-        if n == 0 {
-            break;
-        }
-    }
-    v.reverse();
-    Ok(v)
+        })
+        .map(|mut n| {
+            if n == 0 {
+                return vec![0];
+            }
+            let mut v: Vec<_> = vec![];
+            while n > 0 {
+                v.push(n % to_base);
+                n /= to_base;
+            }
+            v.reverse();
+            v
+        })
 }
