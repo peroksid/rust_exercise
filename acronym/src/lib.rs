@@ -9,7 +9,7 @@ fn is_space(c: &char) -> bool {
 
 pub fn abbreviate(phrase: &str) -> String {
     let mut state = State::Space;
-    let mut result: Vec<char> = Vec::new();
+    let mut result = String::new();
     for c in phrase.chars() {
         match state {
             State::Space => {
@@ -27,5 +27,5 @@ pub fn abbreviate(phrase: &str) -> String {
             }
         }
     }
-    result.into_iter().collect()
+    result
 }
