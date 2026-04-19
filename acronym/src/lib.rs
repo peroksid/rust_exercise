@@ -10,7 +10,11 @@ fn is_space(c: &char) -> bool {
 pub fn abbreviate(phrase: &str) -> String {
     let mut state = State::Space;
     let mut result = String::new();
+    let mut last = ' ';
     for c in phrase.chars() {
+        if c == '\'' {
+            continue;
+        }
         match state {
             State::Space => {
                 if !is_space(&c) {
@@ -21,11 +25,12 @@ pub fn abbreviate(phrase: &str) -> String {
             State::Word => {
                 if is_space(&c) {
                     state = State::Space;
-                } else if c.is_ascii_uppercase() {
+                } else if last.is_ascii_lowercase() && c.is_ascii_uppercase() {
                     result.push(c);
                 }
             }
         }
+        last = c;
     }
     result
 }
