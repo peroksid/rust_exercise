@@ -34,9 +34,8 @@ impl Allergies {
 
     pub fn allergies(&self) -> Vec<Allergen> {
         ALLERGEN_VALUES
-            .iter()
+            .into_iter()
             .filter(|x| self.is_allergic_to(x))
-            .copied()
             .collect()
     }
 }
